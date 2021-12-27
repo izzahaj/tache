@@ -44,7 +44,7 @@ const NewTask = () => {
         } 
         throw new Error("Network error.");
       })
-      .then(() => navigate(`/tasks/${id}`))
+      .then(() => navigate(`/`))
       .catch(error => console.log(error.message));
   };
 

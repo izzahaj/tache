@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import EditTask from "./EditTask";
+import DeleteTask from "./DeleteTask";
 
 const Task = () => {
   let navigate = useNavigate();
@@ -29,24 +30,6 @@ const Task = () => {
       )
   }, []);
 
-  const deleteTask = () => {
-    const url = `/api/v1/tasks/${id}`;
-    fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } 
-        throw new Error("Network error.");
-      })
-      .then(() => navigate("/"))
-      .catch(error => console.log(error.message));
-  };
-
   return (
     <div className="row">
       <SideBar/>
@@ -67,8 +50,8 @@ const Task = () => {
                 <Link to="/" type="button" className="btn btn-secondary">Back to Task List</Link>
               </div>
               <div className="col-md-4">
-                <EditTask/>
-                <button type="button" className="btn btn-danger" onClick={deleteTask}>Delete</button>
+                <EditTask taskId={id} buttonStyle={"btn btn-secondary mx-1"}/>
+                <DeleteTask taskId={id} buttonStyle={"btn btn-danger mx-1"}/>
               </div>
             </div>
           </div>

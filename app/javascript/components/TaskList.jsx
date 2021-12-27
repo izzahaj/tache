@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NewTask from "./NewTask";
+import EditTask from "./EditTask";
+import DeleteTask from "./DeleteTask";
 
 const TaskList = () => {
   const [error, setError] = useState(null);
@@ -39,7 +41,9 @@ const TaskList = () => {
               <small>{task.deadline} {task.timedue}</small>
             </div>
             <div className="col-auto ms-auto me-2">
-              <Link to={`tasks/${task.id}`} className="btn btn-sm btn-outline-dark mt-2">View</Link>
+              <Link to={`tasks/${task.id}`} className="btn btn-sm btn-outline-dark mt-2 mx-1">View</Link>
+              <EditTask taskId={task.id} buttonStyle={"btn btn-sm btn-outline-dark mt-2 mx-1"}/>
+              <DeleteTask taskId={task.id} buttonStyle={"btn btn-sm btn-outline-danger mt-2 mx-1"}/>
             </div>
           </div>
         </div>
