@@ -10,6 +10,8 @@ const NewTask = () => {
   const [deadline, setDeadline] = useState('');
   const [timedue, setTimedue] = useState('');
   const [priority, setPriority] = useState('');
+  const [completed, setCompleted] = useState(false); 
+
 
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -28,7 +30,8 @@ const NewTask = () => {
       description,
       deadline,
       timedue,
-      priority
+      priority,
+      completed
     }
 
     fetch(url, {
@@ -44,13 +47,14 @@ const NewTask = () => {
         } 
         throw new Error("Network error.");
       })
-      .then(() => navigate(`/`))
       .catch(error => console.log(error.message));
+    hideModal();
+    window.location.reload();
   };
 
   return (
     <>
-      <button onClick={showModal} className="sticky-top d-grid btn btn-secondary text-start me-3 ms-1 mb-2">+ Create New Task</button>
+      <button onClick={showModal} className="sticky-top d-grid btn btn-secondary text-start mb-2">+ Create New Task</button>
       <Modal show={isOpen} onHide={hideModal} backdrop="static" keyboard={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Create New Task</Modal.Title>

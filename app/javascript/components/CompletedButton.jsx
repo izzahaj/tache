@@ -1,10 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router";
 
-const DeleteTask = (props) => {
-  let navigate = useNavigate();
-  const deleteTask = () => {
-    const url = `/api/v1/tasks/${props.taskId}`;
+const CompletedButton = () => {
+  const markCompleted = (taskid) => {
+    const url = `/api/v1/tasks/${taskid}`;
     fetch(url, {
       method: 'DELETE',
       headers: {
@@ -17,13 +15,15 @@ const DeleteTask = (props) => {
         } 
         throw new Error("Network error.");
       })
-      .then(() => navigate("/"))
+      //.then(() => navigate("/"))
       .catch(error => console.log(error.message));
-  }
-
-  return(
-    <button onClick={deleteTask} className={props.buttonStyle}>Delete</button>
+    //window.location.reload();
+  };
+  return (
+    <button className="btn btn-outline-info mt-3" onClick={markCompleted}>
+      Mark as Completed
+    </button>
   );
 };
 
-export default DeleteTask;
+export default CompletedButton;

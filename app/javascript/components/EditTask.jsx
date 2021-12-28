@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Modal } from "react-bootstrap";
+import { useParams } from "react-router";
 import TagsInput from "./TagsInput";
 
-const EditTask = (props) => {
+const EditTask = () => {
   let navigate = useNavigate();
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -12,6 +13,8 @@ const EditTask = (props) => {
   const [deadline, setDeadline] = useState("");
   const [timedue, setTimedue] = useState("");
   const [priority, setPriority] = useState("");
+
+  const { id } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -22,7 +25,7 @@ const EditTask = (props) => {
   };  
 
   useEffect(() => {
-    const url = `/api/v1/tasks/${props.taskId}`;
+    const url = `/api/v1/tasks/${id}`;
     fetch(url)
       .then(response => response.json())
       .then(
@@ -43,7 +46,7 @@ const EditTask = (props) => {
   const handleUpdate = (e) => {
     e.preventDefault();
 
-    const url = `/api/v1/tasks/${props.taskId}`;
+    const url = `/api/v1/tasks/${id}`;
 
     const body = {
       description,
@@ -65,13 +68,14 @@ const EditTask = (props) => {
         } 
         throw new Error("Network error.");
       })
-      .then(() => navigate(`/tasks/${props.taskId}`))
       .catch(error => console.log(error.message));
+    hideModal();
+    window.location.reload();
   };
 
   return (
     <>
-      <button onClick={showModal} className={props.buttonStyle}>Edit</button>
+      <button onClick={showModal} className="btn btn-secondary mx-1">Edit</button>
       <Modal show={isOpen} onHide={hideModal} backdrop="static" keyboard={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Edit Task</Modal.Title>
@@ -93,7 +97,7 @@ const EditTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputTimedue" className="col-sm-2 col-form-label">Time</label>
               <div className="col-sm-10">
-                <input type="time" className="form-control" id="inputTimedue" onChange={event => setTimedue(event.target.value)} value={timedue}/>
+                <input type="time" className="form-control" id="inputTimdue" onChange={event => setTimedue(event.target.value)} value={timedue}/>
               </div>
             </div>
             <div className="row mb-3">
