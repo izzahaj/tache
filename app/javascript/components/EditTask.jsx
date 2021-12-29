@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import { Modal } from "react-bootstrap";
 import { useParams } from "react-router";
 import TagsInput from "./TagsInput";
 
-const EditTask = () => {
-  let navigate = useNavigate();
+const EditTask = (props) => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -13,7 +11,7 @@ const EditTask = () => {
   const [deadline, setDeadline] = useState("");
   const [timedue, setTimedue] = useState("");
   const [priority, setPriority] = useState("");
-
+  
   const { id } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +42,7 @@ const EditTask = () => {
   }, []);
 
   const handleUpdate = (e) => {
+    // confirmation
     e.preventDefault();
 
     const url = `/api/v1/tasks/${id}`;
@@ -64,13 +63,14 @@ const EditTask = () => {
     })
       .then(response => {
         if (response.ok) {
+          props.reloadTask();
           return response.json();
         } 
         throw new Error("Network error.");
       })
       .catch(error => console.log(error.message));
     hideModal();
-    window.location.reload();
+    // insert alert "Task edited successfully!"
   };
 
   return (

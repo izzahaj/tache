@@ -1,76 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import React from "react";
 import { Link } from "react-router-dom";
-import SideBar from "./SideBar";
-import EditTask from "./EditTask";
+import DeleteButton from "./DeleteTask";
 
-const Task = () => {
-  let navigate = useNavigate();
-
-  const currTask = { description: '', deadline: '', timedue: '', priority: '', completed: false }; 
-  const [task, setTask] = useState(currTask);
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const { id } = useParams();
-
-  useEffect(() => {
-    const url = `/api/v1/tasks/${id}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(
-        (task) => {
-          setIsLoaded(true);
-          setTask(task);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
-  }, []);
-
-  const deleteTask = () => {
-    const url = `/api/v1/tasks/${id}`;
-    fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } 
-        throw new Error("Network error.");
-      })
-      .then(() => navigate("/"))
-      .catch(error => console.log(error.message));
-  };
-
+const Task = (props) => {
   return (
-    <div className="row">
-      <SideBar/>
-      <div className="d-flex flex-column col">
-        <div className="p-5 mb-4 ms-2 me-3 bg-light rounded-3">
-          <div className="container-fluid py-5">
-            <h1 className="display-5 f1-bold">
-              {task.description}
-            </h1>
-            <h3>{task.priority}</h3>
-            <br/>
-            <p>Date: {task.deadline}</p>
-            <p>Time: {task.timedue}</p>
-            <p>Tags: </p>
-            <br/>
-            <div className="row">
-              <div className="col-md-8">
-                <Link to="/" type="button" className="btn btn-secondary">Back to Task List</Link>
-              </div>
-              <div className="col-md-4">
-                <EditTask/>
-                <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>Delete</button>
-              </div>
-            </div>
+    <div className="d-grid shadow-sm text-start bg-secondary bg-opacity-25 rounded mb-2 py-1">
+      <div className="row hstack gap-2">
+        <div className="col-auto">
+          <input
+            className="form-check-input ms-2"
+            type="checkbox"
+            value={props.task.id}
+            checked={props.checkedBoxes.find((p) => p.id === props.task.id)}
+            onChange={(e) => props.toggleCheckbox(e, props.task)}
+          />
+        </div>
+        <div className="col-auto">
+          <div><strong>{props.task.description}</strong></div>
+          <small>{props.task.deadline} {props.task.timedue}</small>
+        </div>
+        <div className="col-auto ms-auto me-2">
+          <div className="hstack gap-1">
+            <Link to={`tasks/${props.task.id}`} className="btn btn-sm btn-outline-dark mx-1">View</Link>
+            <button className="btn btn-sm btn-outline-dark mx-1">Edit</button>
+            <DeleteButton taskId={props.task.id} reloadTasks={props.reloadTasks}/>
           </div>
         </div>
       </div>

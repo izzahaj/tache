@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import NewTask from "./NewTask";
-import { useParams } from "react-router";
+import Task from "./Task";
 
 const TaskList = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [checkedBoxes, setCheckedBoxes] = useState([]);
 
-  useEffect(() => {
+  const toggleCheckbox = (e, item) => {
+    if (e.target.checked) {
+      let arr = checkedBoxes;
+      arr.push(item.id);
+
+      setCheckedBoxes(arr);
+    } else {
+      let items = checkedBoxes.splice(checkedBoxes.indexOf(item.id), 1);
+      setCheckedBoxes(items);
+    }
+    console.log(checkedBoxes);
+  };
+
+  const loadTasks = () => {
     const url = "/api/v1/tasks";
     fetch(url)
       .then(response => response.json())
@@ -22,6 +35,15 @@ const TaskList = () => {
           setError(error);
         }
       )
+  }
+
+  const reloadTasks = () => {
+    setTasks([]);
+    loadTasks();
+  };
+
+  useEffect(() => {
+    loadTasks();
   }, []);
 
   // if checkbox is ticked, display option to mark as completed
@@ -42,23 +64,20 @@ const TaskList = () => {
         </div>
       </div>
         <br/>
-        <NewTask/>
-        {tasks.map(task => (
-          <div key={task.id} className="shadow-sm text-start bg-secondary bg-opacity-25 rounded mb-2">
-            <div className="row">
-              <div className="col-auto">
-                <input className="form-check-input ms-2 mt-3" type="checkbox"/>
-              </div>
-              <div className="col-auto">
-                <div><strong>{task.description}</strong></div>
-                <small>{task.deadline} {task.timedue}</small>
-              </div>
-              <div className="col-auto ms-auto me-2">
-                <Link to={`tasks/${task.id}`} className="btn btn-sm btn-outline-dark mt-2 mx-1">View</Link>
-              </div>
-            </div>
-          </div>
-        ))}
+        <div className="d-grid">
+          <NewTask reloadTasks={reloadTasks}/>
+          {tasks.map(task => {
+            return (
+              <Task
+                key={task.id}
+                task={task}
+                toggleCheckbox={toggleCheckbox}
+                checkedBoxes={checkedBoxes}
+                reloadTasks={reloadTasks}
+              />
+            );
+          })}
+        </div>
     </div>
   )
 };

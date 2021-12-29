@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "../components/Home";
-import Task from "../components/Task";
+import ViewTask from "../components/ViewTask";
 
 export default (
   <Router>
     <Routes>
       <Route path="/" element={<Home />}/>
-      <Route path="/tasks/:id" element={<Task />}/>
+      <Route path="/tasks/:id" element={<ViewTask />}/>
     </Routes>
   </Router>
 )

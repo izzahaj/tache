@@ -14,10 +14,15 @@ const SideBar = () => {
         <button className="btn btn-sm btn-outline-light" type="submit">Search</button>
       </form>
       <hr/>
-      <ul className="nav nav-pills flex-column mb-auto">
+      <ul className="nav flex-column mb-auto">
         <li className="nav-item">
-          <Link to="/" className="nav-link active">
+          <Link to="/" className="nav-link text-white">
             Task List
+          </Link>
+        </li>
+        <li>
+          <Link to="/" className="nav-link text-white">
+            Completed
           </Link>
         </li>
         <li>

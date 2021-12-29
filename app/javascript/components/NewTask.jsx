@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
 import { Modal } from "react-bootstrap";
 import TagsInput from "./TagsInput";
 
-const NewTask = () => {
-  let navigate = useNavigate();
-
+const NewTask = (props) => {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [timedue, setTimedue] = useState('');
   const [priority, setPriority] = useState('');
-  const [completed, setCompleted] = useState(false); 
-
 
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -30,8 +25,7 @@ const NewTask = () => {
       description,
       deadline,
       timedue,
-      priority,
-      completed
+      priority
     }
 
     fetch(url, {
@@ -43,18 +37,18 @@ const NewTask = () => {
     })
       .then(response => {
         if (response.ok) {
+          props.reloadTasks();
           return response.json();
         } 
         throw new Error("Network error.");
       })
       .catch(error => console.log(error.message));
     hideModal();
-    window.location.reload();
   };
 
   return (
     <>
-      <button onClick={showModal} className="sticky-top d-grid btn btn-secondary text-start mb-2">+ Create New Task</button>
+      <button onClick={showModal} className="sticky-top btn btn-secondary text-start mb-2">+ Create New Task</button>
       <Modal show={isOpen} onHide={hideModal} backdrop="static" keyboard={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Create New Task</Modal.Title>
