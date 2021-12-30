@@ -26,4 +26,9 @@
 Tagging system
 - create tag model
 - create tagging model
-- 
+
+Colour Palettes
+https://colors.muz.li/palette/f9b4ab/fdebd3/264e70/679186/bbd4ce
+https://colorhunt.co/palette/bfcba85b8a7256776c464f41
+https://colorhunt.co/palette/f8ede3bdd2b6a2b29f798777
+https://colorhunt.co/palette/a8e6cfdcedc1ffd3b6ffaaa5

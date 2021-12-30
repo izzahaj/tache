@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
-import { useParams } from "react-router";
 import TagsInput from "./TagsInput";
 
 const EditTask = (props) => {
@@ -9,11 +8,8 @@ const EditTask = (props) => {
 
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [timedue, setTimedue] = useState("");
   const [priority, setPriority] = useState("");
   
-  const { id } = useParams();
-
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
     setIsOpen(true);
@@ -23,15 +19,14 @@ const EditTask = (props) => {
   };  
 
   useEffect(() => {
-    const url = `/api/v1/tasks/${id}`;
+    const url = `/api/v1/tasks/${props.taskId}`;
     fetch(url)
       .then(response => response.json())
       .then(
-        ( { description, deadline, timedue, priority }) => {
+        ( { description, deadline, priority } ) => {
           setIsLoaded(true);
           setDescription(description);
           setDeadline(deadline);
-          setTimedue(timedue);
           setPriority(priority);
         },
         (error) => {
@@ -42,15 +37,13 @@ const EditTask = (props) => {
   }, []);
 
   const handleUpdate = (e) => {
-    // confirmation
     e.preventDefault();
 
-    const url = `/api/v1/tasks/${id}`;
+    const url = `/api/v1/tasks/${props.taskId}`;
 
     const body = {
       description,
       deadline,
-      timedue,
       priority
     }
 
@@ -63,19 +56,18 @@ const EditTask = (props) => {
     })
       .then(response => {
         if (response.ok) {
-          props.reloadTask();
+          props.reload();
           return response.json();
         } 
         throw new Error("Network error.");
       })
       .catch(error => console.log(error.message));
     hideModal();
-    // insert alert "Task edited successfully!"
   };
 
   return (
     <>
-      <button onClick={showModal} className="btn btn-secondary mx-1">Edit</button>
+      <button onClick={showModal} className={props.buttonStyle}>Edit</button>
       <Modal show={isOpen} onHide={hideModal} backdrop="static" keyboard={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Edit Task</Modal.Title>
@@ -91,13 +83,7 @@ const EditTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputDeadline" className="col-sm-2 col-form-label">Deadline</label>
               <div className="col-sm-10">
-                <input type="date" className="form-control" id="inputDeadline" onChange={event => setDeadline(event.target.value)} value={deadline}/>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <label htmlFor="inputTimedue" className="col-sm-2 col-form-label">Time</label>
-              <div className="col-sm-10">
-                <input type="time" className="form-control" id="inputTimdue" onChange={event => setTimedue(event.target.value)} value={timedue}/>
+                <input type="date" className="form-control" id="inputDeadline" onChange={event => setDeadline(event.target.value)} value={deadline === null ? '' : deadline}/>
               </div>
             </div>
             <div className="row mb-3">

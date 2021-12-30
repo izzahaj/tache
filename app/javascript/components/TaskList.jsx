@@ -6,20 +6,6 @@ const TaskList = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [tasks, setTasks] = useState([]);
-  const [checkedBoxes, setCheckedBoxes] = useState([]);
-
-  const toggleCheckbox = (e, item) => {
-    if (e.target.checked) {
-      let arr = checkedBoxes;
-      arr.push(item.id);
-
-      setCheckedBoxes(arr);
-    } else {
-      let items = checkedBoxes.splice(checkedBoxes.indexOf(item.id), 1);
-      setCheckedBoxes(items);
-    }
-    console.log(checkedBoxes);
-  };
 
   const loadTasks = () => {
     const url = "/api/v1/tasks";
@@ -57,11 +43,6 @@ const TaskList = () => {
         <div className="col-auto">
           <h1 className="mt-2">Hello User!</h1>
         </div>
-        <div className="col-auto ms-auto">
-          <button className="btn btn-outline-info mt-3">
-            Mark as Completed
-          </button>
-        </div>
       </div>
         <br/>
         <div className="d-grid">
@@ -71,8 +52,6 @@ const TaskList = () => {
               <Task
                 key={task.id}
                 task={task}
-                toggleCheckbox={toggleCheckbox}
-                checkedBoxes={checkedBoxes}
                 reloadTasks={reloadTasks}
               />
             );

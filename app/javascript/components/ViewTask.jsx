@@ -3,13 +3,13 @@ import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import EditTask from "./EditTask";
+import moment from "moment";
 
 const ViewTask = () => {
   let navigate = useNavigate();
  
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [timedue, setTimedue] = useState("");
   const [priority, setPriority] = useState("");
 
   const [error, setError] = useState(null);
@@ -25,7 +25,6 @@ const ViewTask = () => {
           setIsLoaded(true);
           setDescription(description);
           setDeadline(deadline);
-          setTimedue(timedue);
           setPriority(priority);
         },
         (error) => {
@@ -37,7 +36,6 @@ const ViewTask = () => {
   const reloadTask = () => {
     setDescription(description);
     setDeadline(deadline);
-    setTimedue(timedue);
     setPriority(priority);
     loadTask();
   };
@@ -56,7 +54,6 @@ const ViewTask = () => {
     })
       .then(response => {
         if (response.ok) {
-          reloadTask();
           return response.json();
         } 
         throw new Error("Network error.");
@@ -76,8 +73,17 @@ const ViewTask = () => {
             </h1>
             <h3>{priority}</h3>
             <br/>
-            <p>Date: {deadline}</p>
-            <p>Time: {timedue}</p>
+            <p>Deadline: {deadline === null
+              ? ""
+              : moment(deadline).calendar({
+                  sameDay: '[Today]',
+                  nextDay: '[Tomorrow]',
+                  nextWeek: 'dddd',
+                  lastDay: '[Yesterday]',
+                  lastWeek: '[Last] dddd, D MMM YYYY',
+                  sameElse: 'dddd, D MMM YYYY'
+                })}
+            </p>
             <p>Tags: </p>
             <br/>
             <div className="row">
@@ -85,7 +91,7 @@ const ViewTask = () => {
                 <Link to="/" type="button" className="btn btn-secondary">Back to Task List</Link>
               </div>
               <div className="col-md-4">
-                <EditTask reloadTask={reloadTask}/>
+                <EditTask taskId={id} reload={reloadTask} buttonStyle={"btn btn-secondary mx-1"}/>
                 <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>Delete</button>
               </div>
             </div>

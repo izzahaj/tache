@@ -5,7 +5,6 @@ import TagsInput from "./TagsInput";
 const NewTask = (props) => {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
-  const [timedue, setTimedue] = useState('');
   const [priority, setPriority] = useState('');
 
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +23,6 @@ const NewTask = (props) => {
     const body = {
       description,
       deadline,
-      timedue,
       priority
     }
 
@@ -58,25 +56,19 @@ const NewTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputDescription" className="col-sm-2 col-form-label">Description</label>
               <div className="col-sm-10">
-                <input type="text" className="form-control" id="inputDescription" onChange={event => setDescription(event.target.value)} value={description} required/>
+                <input type="text" className="form-control" id="inputDescription" onChange={event => setDescription(event.target.value)} required/>
               </div>
             </div>
             <div className="row mb-3">
               <label htmlFor="inputDeadline" className="col-sm-2 col-form-label">Deadline</label>
               <div className="col-sm-10">
-                <input type="date" className="form-control" id="inputDeadline" onChange={event => setDeadline(event.target.value)} value={deadline}/>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <label htmlFor="inputTimedue" className="col-sm-2 col-form-label">Time</label>
-              <div className="col-sm-10">
-                <input type="time" className="form-control" id="inputTimedue" onChange={event => setTimedue(event.target.value)} value={timedue}/>
+                <input type="date" className="form-control" id="inputDeadline" onChange={event => setDeadline(event.target.value)}/>
               </div>
             </div>
             <div className="row mb-3">
               <label htmlFor="inputPriority" className="col-sm-2 col-form-label">Priority</label>
               <div className="col-sm-10">
-                <select className="form-select" id="inputPriority" onChange={event => setPriority(event.target.value)} value={priority}>
+                <select className="form-select" id="inputPriority" onChange={event => setPriority(event.target.value)}>
                   <option value="No Priority">No Priority</option>
                   <option value="Low Priority">Low Priority</option>
                   <option value="Medium Priority">Medium Priority</option>

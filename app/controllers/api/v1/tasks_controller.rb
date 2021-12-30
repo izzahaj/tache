@@ -3,7 +3,7 @@ class Api::V1::TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
-    @tasks = Task.all.order(deadline: :asc, timedue: :asc)
+    @tasks = Task.all.order(deadline: :asc, description: :asc)
     render json: @tasks
   end
 
@@ -52,6 +52,6 @@ class Api::V1::TasksController < ApplicationController
     end
     
     def task_params
-      params.require(:task).permit(:description, :deadline, :timedue, :priority, :completed)
+      params.require(:task).permit(:description, :deadline, :timedue, :priority)
     end
 end
