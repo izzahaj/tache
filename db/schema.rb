@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_30_130351) do
+ActiveRecord::Schema.define(version: 2022_01_03_141420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "taggings", force: :cascade do |t|
-    t.bigint "tag_id"
-    t.bigint "task_id"
+    t.bigint "tag_id", null: false
+    t.bigint "task_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["tag_id"], name: "index_taggings_on_tag_id"
@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(version: 2021_12_30_130351) do
     t.string "priority", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "tag_list", default: [], array: true
+    t.index ["tag_list"], name: "index_tasks_on_tag_list", using: :gin
   end
 
   add_foreign_key "taggings", "tags"

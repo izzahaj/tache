@@ -1,38 +1,47 @@
 import React, { useState } from "react";
 
-const TagsInput = () => {
-  const [tags, setTags] = useState([]);
-  const [tagInput, setTagInput] = useState('');
+const TagsInput = (props) => {
+  const [tagInput, setTagInput] = useState("");
+
   const removeTag = (i) => {
-    const newTags = [ ...tags ];
+    const newTags = [ ...props.tag_list ];
     newTags.splice(i, 1);
-    setTags(newTags);
+    props.setTag_List(newTags);
   };
 
   const inputKeyDown = (e) => {
     const val = e.target.value;
     if (e.key === 'Enter' && val) {
-      if (tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
+      if (props.tag_list.find(tag => tag.toLowerCase() === val.toLowerCase())) {
         return;
       }
-      setTags([...tags, val]);
-      setTagInput(null);
+      e.preventDefault();
+      props.setTag_List([...props.tag_list, val]);
+      setTagInput("");
+      console.log(props.tag_list);
     } else if (e.key === 'Backspace' && !val) {
-      removeTag(tags.length - 1);
+      removeTag(props.tag_list.length - 1);
     }
   };
 
   return (
-    <div className="">
-      <ul>
-        {tags.map((tag, i) => (
+    <div className="form-control input-tag d-grid">
+      <ul className="input-tag__tags">
+        {props.tag_list.map((tag, i) => (
           <li key={tag}>
             {tag}
             <button type="button" onClick={() => { removeTag(i); }}>x</button>
           </li>
         ))}
-        <li>
-          <input type="text" className="form-control" id="inputTags" onKeyDown={inputKeyDown} ref={c => { setTagInput(c); }}/>
+        <li className="input-tag__tags__input">
+          <input
+            type="text"
+            className={props.formStyle}
+            id="inputTags"
+            onKeyDown={inputKeyDown}
+            value={tagInput}
+            onChange={event => setTagInput(event.target.value)}
+          />
         </li>
       </ul>
     </div>

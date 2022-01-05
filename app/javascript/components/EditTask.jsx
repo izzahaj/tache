@@ -9,6 +9,7 @@ const EditTask = (props) => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("");
+  const [tag_list, setTag_List] = useState([]);
   
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -23,11 +24,12 @@ const EditTask = (props) => {
     fetch(url)
       .then(response => response.json())
       .then(
-        ( { description, deadline, priority } ) => {
+        ( { description, deadline, priority, tag_list } ) => {
           setIsLoaded(true);
           setDescription(description);
           setDeadline(deadline);
           setPriority(priority);
+          setTag_List(tag_list);
         },
         (error) => {
           setIsLoaded(true);
@@ -44,7 +46,8 @@ const EditTask = (props) => {
     const body = {
       description,
       deadline,
-      priority
+      priority,
+      tag_list
     }
 
     fetch(url, {
@@ -90,7 +93,7 @@ const EditTask = (props) => {
               <label htmlFor="inputPriority" className="col-sm-2 col-form-label">Priority</label>
               <div className="col-sm-10">
                 <select className="form-select" id="inputPriority" onChange={event => setPriority(event.target.value)} value={priority}>
-                  <option value="No Priority">No Priority</option>
+                  <option value="">No Priority</option>
                   <option value="Low Priority">Low Priority</option>
                   <option value="Medium Priority">Medium Priority</option>
                   <option value="High Priority">High Priority</option>
@@ -100,12 +103,12 @@ const EditTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
               <div className="col-sm-10">
-                <TagsInput/>
+                <TagsInput tag_list={tag_list} setTag_List={setTag_List}/>
               </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={handleUpdate} type="submit" className="btn btn-secondary">Update</button>
+            <button onClick={handleUpdate} type="button" className="btn btn-secondary">Update</button>
             <button onClick={hideModal} className="btn btn-secondary">Cancel</button>
           </Modal.Footer>
         </form>

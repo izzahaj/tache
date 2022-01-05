@@ -11,6 +11,7 @@ const ViewTask = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("");
+  const [tag_list, setTag_List] = useState([]);
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -21,11 +22,12 @@ const ViewTask = () => {
     fetch(url)
       .then(response => response.json())
       .then(
-        ({description, deadline, timedue, priority}) => {
+        ({ description, deadline, priority, tag_list }) => {
           setIsLoaded(true);
           setDescription(description);
           setDeadline(deadline);
           setPriority(priority);
+          setTag_List(tag_list);
         },
         (error) => {
           setIsLoaded(true);
@@ -37,6 +39,7 @@ const ViewTask = () => {
     setDescription(description);
     setDeadline(deadline);
     setPriority(priority);
+    setTag_List(tag_list)
     loadTask();
   };
 
@@ -68,12 +71,14 @@ const ViewTask = () => {
       <div className="d-flex flex-column col">
         <div className="p-5 mb-4 ms-2 me-3 bg-light rounded-3">
           <div className="container-fluid py-5">
-            <h1 className="display-5 f1-bold">
+            <div className="row display-4 ms-1">
               {description}
-            </h1>
-            <h3>{priority}</h3>
+            </div>
+            <div className="row display-6 fw-bold ms-1">
+              {priority}
+            </div>
             <br/>
-            <p>Deadline: {deadline === null
+            <div className="row ms-1">Deadline: {deadline === null
               ? ""
               : moment(deadline).calendar({
                   sameDay: '[Today]',
@@ -83,14 +88,22 @@ const ViewTask = () => {
                   lastWeek: '[Last] dddd, D MMM YYYY',
                   sameElse: 'dddd, D MMM YYYY'
                 })}
-            </p>
-            <p>Tags: </p>
+            </div>
+            <br/>
+            <div className="row ms-1 hstack">Tags: {tag_list.map(tag => {
+              return (
+                <div key={tag} className="col-auto p-1 ms-2 bg-info bg-opacity-50 rounded">
+                  {tag}
+                </div>
+              )
+            })}
+            </div>
             <br/>
             <div className="row">
               <div className="col-md-8">
                 <Link to="/" type="button" className="btn btn-secondary">Back to Task List</Link>
               </div>
-              <div className="col-md-4">
+              <div className="col ms-auto">
                 <EditTask taskId={id} reload={reloadTask} buttonStyle={"btn btn-secondary mx-1"}/>
                 <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>Delete</button>
               </div>

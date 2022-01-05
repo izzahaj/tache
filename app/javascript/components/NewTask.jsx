@@ -6,6 +6,7 @@ const NewTask = (props) => {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [priority, setPriority] = useState('');
+  const [tag_list, setTag_List] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -13,6 +14,7 @@ const NewTask = (props) => {
   };
   const hideModal = () => {
     setIsOpen(false);
+    setTag_List([]);
   };  
 
   const handleSubmit = (e) => {
@@ -23,7 +25,8 @@ const NewTask = (props) => {
     const body = {
       description,
       deadline,
-      priority
+      priority,
+      tag_list
     }
 
     fetch(url, {
@@ -46,7 +49,7 @@ const NewTask = (props) => {
 
   return (
     <>
-      <button onClick={showModal} className="sticky-top btn btn-secondary text-start mb-2">+ Create New Task</button>
+      <button onClick={showModal} className="btn btn-secondary text-start my-2">+ Create New Task</button>
       <Modal show={isOpen} onHide={hideModal} backdrop="static" keyboard={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Create New Task</Modal.Title>
@@ -69,7 +72,7 @@ const NewTask = (props) => {
               <label htmlFor="inputPriority" className="col-sm-2 col-form-label">Priority</label>
               <div className="col-sm-10">
                 <select className="form-select" id="inputPriority" onChange={event => setPriority(event.target.value)}>
-                  <option value="No Priority">No Priority</option>
+                  <option value="">No Priority</option>
                   <option value="Low Priority">Low Priority</option>
                   <option value="Medium Priority">Medium Priority</option>
                   <option value="High Priority">High Priority</option>
@@ -79,12 +82,12 @@ const NewTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
               <div className="col-sm-10">
-                <TagsInput/>
+                <TagsInput tag_list={tag_list} setTag_List={setTag_List} formStyle={"form-control"}/>
               </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={handleSubmit} type="submit" className="btn btn-secondary">Create Task</button>
+            <button onClick={handleSubmit} type="button" className="btn btn-secondary">Create Task</button>
             <button onClick={hideModal} className="btn btn-secondary">Cancel</button>
           </Modal.Footer>
         </form>

@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
 import NewTask from "./NewTask";
 import Task from "./Task";
+import SearchBar from "./SearchBar";
+import { Collapse } from "react-bootstrap";
 
-const TaskList = () => {
+const TaskList = (props) => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+
+  const handleSearchBar = () => {
+    setShowSearchBar(!showSearchBar);
+  }
 
   const loadTasks = () => {
-    const url = "/api/v1/tasks";
+    const url = `/api/v1/${props.filter}`;
     fetch(url)
       .then(response => response.json())
       .then(
@@ -32,31 +39,47 @@ const TaskList = () => {
     loadTasks();
   }, []);
 
-  // if checkbox is ticked, display option to mark as completed
-  // add a boolean type column (completed/active) --> if completed, mark as true
-  // when marked as completed, task list should filter out the completed tasks
-  // add a separate view of all completed tasks on the side bar
-
   return (
     <div className="d-flex flex-column col me-3 ms-1">
-      <div className="row">
-        <div className="col-auto">
-          <h1 className="mt-2">Hello User!</h1>
+      <div className="hstack mt-2">
+        <div>
+          <h1>Hello User!</h1>
+        </div>
+        <div className="ms-auto">
+          <button
+            className="btn btn-dark"
+            onClick={handleSearchBar}
+            aria-controls="searchBar"
+            aria-expanded={showSearchBar}
+          >
+            {showSearchBar ? "Hide Search Bar" : "Show Search Bar"}
+          </button>
         </div>
       </div>
-        <br/>
-        <div className="d-grid">
+      <Collapse in={showSearchBar}>
+        <div id="searchBar">
+          <SearchBar tasks={tasks} setTasks={setTasks} filter={props.filter}/>
+        </div>
+      </Collapse>
+      {tasks.length < 1 ? null : <div className="fs-4 fw-lighter text-center">{tasks.length} tasks found.</div>}
+      <div className="d-grid">
+        <div className="pt-2 sticky-top d-grid bg-white">
           <NewTask reloadTasks={reloadTasks}/>
-          {tasks.map(task => {
-            return (
-              <Task
-                key={task.id}
-                task={task}
-                reloadTasks={reloadTasks}
-              />
-            );
+        </div>
+        <div>
+          {tasks.length < 1
+            ? <div className="fs-4 fw-lighter text-center">No tasks found.</div>
+            : tasks.map(task => {
+                return (
+                  <Task
+                    key={task.id}
+                    task={task}
+                    reloadTasks={reloadTasks}
+                  />
+                );
           })}
         </div>
+      </div>
     </div>
   )
 };

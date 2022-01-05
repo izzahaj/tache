@@ -2,13 +2,13 @@ import React from "react";
 import SideBar from "./SideBar";
 import TaskList from "./TaskList";
 
-const Home = () => {
+const Today = () => {
   return (
     <div className="row">
       <SideBar/>
-      <TaskList filter={"tasks"}/>
+      <TaskList filter={"today"}/>
     </div>
   );
 };
 
-export default Home;
+export default Today;

@@ -1,36 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Filters from "./Filters"
+import { Link, NavLink } from "react-router-dom";
 
 const SideBar = () => {
   return (
-    <div className="col-sm-4 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark min-vh-100" style={{width: "280px"}}>
-      <Link to="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto mx-2 text-white text-decoration-none">
-        <div className="fs-3">Tâche</div>
+    <div className="sticky-top col-sm-4 d-flex flex-column flex-shrink-0 p-3 bg-mintgreen min-vh-100" style={{width: "280px", height: "100%"}}>
+      <Link to="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto mx-2 text-black text-decoration-none">
+        <div><h2>Tâche</h2></div>
       </Link>
-      <br/>
-      <form className="d-flex mx-2">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button className="btn btn-sm btn-outline-light" type="submit">Search</button>
-      </form>
       <hr/>
       <ul className="nav flex-column mb-auto">
         <li className="nav-item">
-          <Link to="/" className="nav-link text-white">
+          <NavLink to="/" className="nav-link text-black" >
             Task List
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link to="/" className="nav-link text-white">
-            Completed
-          </Link>
-        </li>
-        <li>
-          <Link to="/" className="nav-link text-white">
+          <NavLink to="/today" className="nav-link text-black">
             Today
-          </Link>
+          </NavLink>
         </li>
-        <Filters/>
+        <li>
+          <NavLink to="/tomorrow" className="nav-link text-black">
+            Tomorrow
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/" className="nav-link text-black">
+            Tags
+          </NavLink>
+        </li>
       </ul>
     </div>
   )
