@@ -28,16 +28,28 @@ class Task < ApplicationRecord
 
   scope :filter_tags, ->(tag_list) {
     tag_names = tag_list.split(",")
-    joins(:tags).where(tags: { name: tag_names }).distinct if tag_names.length > 0
+    joins(:tags).where(tags: { name: tag_list }).distinct if tag_list.length > 0
 
   }
 
-  scope :search, ->(description, priority, sort_value, tag_list) {
-    simple_search(description).filter_priority(priority).sort_value(sort_value).filter_tags(tag_list)
+  scope :due_date, ->(due_date) {
+    if due_date == "today"
+      where(deadline: Date.today)
+    elsif due_date == "tomorrow"
+      where(deadline: Date.today + 1)
+    elsif due_date == "this_week"
+      where(deadline: Date.today..1.week.from_now)
+    elsif due_date == "2_weeks"
+      where(deadline: (Date.today + 7)..2.week.from_now)
+    elsif due_date == "month"
+      where(deadline: (1.month.from_now - 1.week)..1.month.from_now)
+    elsif due_date == "overdue"
+      where("deadline < ?", Date.today)
+    end
   }
 
-  scope :today, -> { where(deadline: Time.now) }
-
-  scope :tomorrow, -> { where(deadline: Time.now + 1.day) }
+  scope :search, ->(description, priority, sort_value, tag_list, due_date) {
+    simple_search(description).filter_priority(priority).sort_value(sort_value).filter_tags(tag_list).due_date(due_date)
+  }
 
 end

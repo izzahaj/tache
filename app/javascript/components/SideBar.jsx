@@ -15,17 +15,7 @@ const SideBar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/today" className="nav-link text-black">
-            Today
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/tomorrow" className="nav-link text-black">
-            Tomorrow
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/" className="nav-link text-black">
+          <NavLink to="/tags" className="nav-link text-black">
             Tags
           </NavLink>
         </li>

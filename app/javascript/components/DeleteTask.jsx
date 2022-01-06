@@ -1,11 +1,13 @@
 import React from "react";
 
 const DeleteButton = (props) => {
-  const deleteTask = () => {
+  const deleteItem = () => {
     const url = `/api/v1/tasks/${props.taskId}`;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
     fetch(url, {
       method: 'DELETE',
       headers: {
+        "X-CSRF-Token": token,
         'Content-Type': 'application/json'
       }
     })
@@ -20,7 +22,7 @@ const DeleteButton = (props) => {
   };
 
   return (
-    <button className="btn btn-sm btn-outline-danger mx-1" onClick={deleteTask}>Delete</button>
+    <button className="btn btn-sm btn-outline-danger mx-1" onClick={deleteItem}>Delete</button>
   );
 };
 

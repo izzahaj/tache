@@ -6,7 +6,7 @@ const NewTask = (props) => {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [priority, setPriority] = useState('');
-  const [tag_list, setTag_List] = useState([]);
+  const [tag_list, setTagList] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
@@ -14,12 +14,13 @@ const NewTask = (props) => {
   };
   const hideModal = () => {
     setIsOpen(false);
-    setTag_List([]);
+    setTagList([]);
   };  
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const token = document.querySelector('meta[name="csrf-token"]').content;
     const url = "/api/v1/tasks";
 
     const body = {
@@ -32,6 +33,7 @@ const NewTask = (props) => {
     fetch(url, {
       method: 'POST',
       headers: {
+        "X-CSRF-Token": token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body) 
@@ -82,7 +84,7 @@ const NewTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
               <div className="col-sm-10">
-                <TagsInput tag_list={tag_list} setTag_List={setTag_List} formStyle={"form-control"}/>
+                <TagsInput tag_list={tag_list} setTagList={setTagList} formStyle={"form-control"}/>
               </div>
             </div>
           </Modal.Body>

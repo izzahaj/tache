@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="row">
       <SideBar/>
-      <TaskList filter={"tasks"}/>
+      <TaskList/>
     </div>
   );
 };

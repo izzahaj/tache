@@ -34,3 +34,5 @@ only allow existing tags
 - work on page that displays all existing and implement delete method for tags
   - total number of tasks with the tag is displayed next to the tag (use count method)
 - every "task list" or search result displays the total number of tasks, using taggings model
+
+DO ERROR HANDLING

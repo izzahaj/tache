@@ -1,6 +1,8 @@
 class Api::V1::TagsController < ApplicationController
+  before_action :set_tag, only: [:show, :destroy]
+
   def index
-    @tags = Tag.all.order(name: :asc)
+    @tags = Tag.order(name: :asc)
     render json: @tags
   end
 
@@ -9,6 +11,11 @@ class Api::V1::TagsController < ApplicationController
     render json: { notice: 'Tag deleted.' }
   end
 
+  def get_tag_list
+    @tag_list = Tag.joins(:taggings).where(taggings: { task_id: params[:id]})
+    render json: @tag_list
+  end
+  
   private
 
     def set_tag

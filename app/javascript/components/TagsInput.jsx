@@ -6,7 +6,7 @@ const TagsInput = (props) => {
   const removeTag = (i) => {
     const newTags = [ ...props.tag_list ];
     newTags.splice(i, 1);
-    props.setTag_List(newTags);
+    props.setTagList(newTags);
   };
 
   const inputKeyDown = (e) => {
@@ -16,7 +16,7 @@ const TagsInput = (props) => {
         return;
       }
       e.preventDefault();
-      props.setTag_List([...props.tag_list, val]);
+      props.setTagList([...props.tag_list, val]);
       setTagInput("");
       console.log(props.tag_list);
     } else if (e.key === 'Backspace' && !val) {

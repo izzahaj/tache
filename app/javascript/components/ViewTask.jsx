@@ -11,35 +11,39 @@ const ViewTask = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("");
-  const [tag_list, setTag_List] = useState([]);
+  const [tag_list, setTagList] = useState([]);
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const { id } = useParams();
 
   const loadTask = () => {
-    const url = `/api/v1/tasks/${id}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(
-        ({ description, deadline, priority, tag_list }) => {
-          setIsLoaded(true);
-          setDescription(description);
-          setDeadline(deadline);
-          setPriority(priority);
-          setTag_List(tag_list);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      );
+    const url1 = `/api/v1/tasks/${id}`;
+    const url2 = `/api/v1/get_tag_list/${id}`;
+    Promise.all([
+      fetch(url1).then(response => response.json()),
+      fetch(url2).then(response => response.json())
+    ]).then(
+      ([{ description, deadline, priority }, tag_list]) => {
+        setIsLoaded(true);
+        setDescription(description);
+        setDeadline(deadline);
+        setPriority(priority);
+        setTagList(tag_list.map(tag => {
+          return tag.name;
+        }));
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
+      }
+    )
   };
   const reloadTask = () => {
     setDescription(description);
     setDeadline(deadline);
     setPriority(priority);
-    setTag_List(tag_list)
+    setTagList(tag_list)
     loadTask();
   };
 
@@ -49,9 +53,12 @@ const ViewTask = () => {
 
   const deleteTask = () => {
     const url = `/api/v1/tasks/${id}`;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+    
     fetch(url, {
       method: 'DELETE',
       headers: {
+        "X-CSRF-Token": token,
         'Content-Type': 'application/json'
       }
     })
@@ -78,6 +85,7 @@ const ViewTask = () => {
               {priority}
             </div>
             <br/>
+            <br/>
             <div className="row ms-1">Deadline: {deadline === null
               ? ""
               : moment(deadline).calendar({
@@ -92,7 +100,7 @@ const ViewTask = () => {
             <br/>
             <div className="row ms-1 hstack">Tags: {tag_list.map(tag => {
               return (
-                <div key={tag} className="col-auto p-1 ms-2 bg-info bg-opacity-50 rounded">
+                <div key={tag} className="col-auto py-1 px-2 ms-2 bg-darkblue rounded text-white">
                   {tag}
                 </div>
               )

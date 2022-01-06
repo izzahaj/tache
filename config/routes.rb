@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :tags, only: [:index, :destroy]
       get 'today', to: 'tasks#today'
       get 'tomorrow', to: 'tasks#tomorrow'
+      get '/get_tag_list/:id', to: 'tags#get_tag_list'
     end
   end
   root 'home#index'

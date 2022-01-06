@@ -9,8 +9,8 @@ const EditTask = (props) => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("");
-  const [tag_list, setTag_List] = useState([]);
-  
+  const [tag_list, setTagList] = useState([]);
+
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
     setIsOpen(true);
@@ -20,27 +20,31 @@ const EditTask = (props) => {
   };  
 
   useEffect(() => {
-    const url = `/api/v1/tasks/${props.taskId}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(
-        ( { description, deadline, priority, tag_list } ) => {
-          setIsLoaded(true);
-          setDescription(description);
-          setDeadline(deadline);
-          setPriority(priority);
-          setTag_List(tag_list);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
+    const url1 = `/api/v1/tasks/${props.taskId}`;
+    const url2 = `/api/v1/get_tag_list/${props.taskId}`;
+    Promise.all([
+      fetch(url1).then(response => response.json()),
+      fetch(url2).then(response => response.json())
+    ]).then(
+      ([{ description, deadline, priority }, tag_list]) => {
+        setIsLoaded(true);
+        setDescription(description);
+        setDeadline(deadline);
+        setPriority(priority);
+        setTagList(tag_list.map(tag => {
+          return tag.name;
+        }));
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
+      }
+    )
   }, []);
 
   const handleUpdate = (e) => {
     e.preventDefault();
-
+    const token = document.querySelector('meta[name="csrf-token"]').content;
     const url = `/api/v1/tasks/${props.taskId}`;
 
     const body = {
@@ -53,6 +57,7 @@ const EditTask = (props) => {
     fetch(url, {
       method: 'PUT',
       headers: {
+        "X-CSRF-Token": token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body) 
@@ -103,7 +108,7 @@ const EditTask = (props) => {
             <div className="row mb-3">
               <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
               <div className="col-sm-10">
-                <TagsInput tag_list={tag_list} setTag_List={setTag_List}/>
+                <TagsInput tag_list={tag_list} setTaglist={setTagList}/>
               </div>
             </div>
           </Modal.Body>
