@@ -1,14 +1,11 @@
-- add confirmation message when deleting tasks and tags
 - Reorganize components (change colour of priority text displayed)
 - customize css if possible (do this last) --> add icons, change font, etc.
 
-- create user model (figure out how to integrate devise gem with react)
-- add authentication with devise
+- create user model
+- add authentication
 - add typescript
 - add redux
 - add docker
-- add a sorting button at the top --> sort by priority (with priority headers) by default, can choose to sort by deadline
-- add edit button (with kebab menu) --> give option to edit or delete task
 - add a details column?
 
 Colour Palettes
@@ -17,22 +14,5 @@ https://colorhunt.co/palette/bfcba85b8a7256776c464f41
 https://colorhunt.co/palette/f8ede3bdd2b6a2b29f798777
 https://colorhunt.co/palette/a8e6cfdcedc1ffd3b6ffaaa5
 
-link to view list of tags --> have option to delete a tag
-
-sidebar should darken for tab that is being displayed
-search bar displays all tasks based on selected filters/tabs (from array of tasks requested from API)
-sort bar (dropdown menu) at top right hand corner of task list (in-line with 'Hello User)
---> sort by: deadline, priority
-
-tag input bar at the top of task list --> returns filtered list of tasks by tags
-if tag input bar is empty, display all tasks
-filter using url in loadTasks function --> use props and query in task controller
-attempt live filtering, otherwise add button to fetch task list
-only allow existing tags
-
-
-- work on page that displays all existing and implement delete method for tags
-  - total number of tasks with the tag is displayed next to the tag (use count method)
-- every "task list" or search result displays the total number of tasks, using taggings model
 
 DO ERROR HANDLING

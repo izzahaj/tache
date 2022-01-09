@@ -4,10 +4,17 @@ import Task from "./Task";
 import SearchBar from "./SearchBar";
 import { Collapse } from "react-bootstrap";
 
+interface TasksData {
+  id: number,
+  description: string,
+  deadline: string,
+  priority: string
+}
+
 const TaskList = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<TasksData[]>([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
 
   const handleSearchBar = () => {
@@ -17,18 +24,22 @@ const TaskList = () => {
   const loadTasks = () => {
     const url = `/api/v1/tasks`;
     fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Could not fetch task data.");
+      })
       .then(
-        (task) => {
+        (tasks) => {
           setIsLoaded(true);
-          setTasks(task);
+          setTasks(tasks);
         },
         (error) => {
           setIsLoaded(true);
-          setError(error);
-        }
-      )
-  }
+          setError(error.message);
+        })
+  };
 
   const reloadTasks = () => {
     setTasks([]);
@@ -59,18 +70,19 @@ const TaskList = () => {
         </div>
         <Collapse in={showSearchBar}>
           <div id="searchBar">
-            <SearchBar tasks={tasks} setTasks={setTasks}/>
+            <SearchBar setTasks={setTasks}/>
           </div>
         </Collapse>
-        {tasks.length < 1 ? null : <div className="fs-4 fw-lighter text-center">{tasks.length} tasks found.</div>}
+        <div className="fs-4 fw-lighter text-center">{tasks.length < 1 ? "No" : tasks.length} tasks found.</div>
         <div className="pt-2 d-grid bg-white">
           <NewTask reloadTasks={reloadTasks}/>
         </div>
       </div>
       <div className="d-grid">
         <div>
-          {tasks.length < 1
-            ? <div className="fs-4 fw-lighter text-center">No tasks found.</div>
+          { error && <div className="fs-4 fw-lighter text-center">Error: {error}</div> }
+          { !isLoaded
+            ? <div className="fs-4 fw-lighter text-center">Loading tasks...</div>
             : tasks.map(task => {
                 return (
                   <Task

@@ -7,42 +7,49 @@ import moment from "moment";
 
 const ViewTask = () => {
   let navigate = useNavigate();
- 
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [priority, setPriority] = useState("");
-  const [tag_list, setTagList] = useState([]);
-
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const currTask = { description: "", deadline: "", priority: "" };
+  const [task, setTask] = useState(currTask);
+  const [tag_list, setTagList] = useState<string[]>([]);
+
   const { id } = useParams();
 
   const loadTask = () => {
     const url1 = `/api/v1/tasks/${id}`;
     const url2 = `/api/v1/get_tag_list/${id}`;
+
     Promise.all([
-      fetch(url1).then(response => response.json()),
-      fetch(url2).then(response => response.json())
-    ]).then(
-      ([{ description, deadline, priority }, tag_list]) => {
+      fetch(url1)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Could not fetch task data.");
+        }),
+      fetch(url2)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Could not fetch tags data.");
+        }),
+    ])
+    .then(
+      ([task, tag_list]) => {
         setIsLoaded(true);
-        setDescription(description);
-        setDeadline(deadline);
-        setPriority(priority);
-        setTagList(tag_list.map(tag => {
-          return tag.name;
-        }));
-      },
-      (error) => {
+        setTask(task);
+        setTagList(tag_list.map((tag: { name: string; }) => tag.name));
+      })
+      .catch(error => {
         setIsLoaded(true);
-        setError(error);
-      }
-    )
+        setError(error.message);
+      })
   };
+
   const reloadTask = () => {
-    setDescription(description);
-    setDeadline(deadline);
-    setPriority(priority);
+    setTask(task);
     setTagList(tag_list)
     loadTask();
   };
@@ -53,12 +60,12 @@ const ViewTask = () => {
 
   const deleteTask = () => {
     const url = `/api/v1/tasks/${id}`;
-    const token = document.querySelector('meta[name="csrf-token"]').content;
+    const token = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
     
     fetch(url, {
       method: 'DELETE',
       headers: {
-        "X-CSRF-Token": token,
+        "X-CSRF-Token": token.content,
         'Content-Type': 'application/json'
       }
     })
@@ -78,17 +85,19 @@ const ViewTask = () => {
       <div className="d-flex flex-column col">
         <div className="p-5 mb-4 ms-2 me-3 bg-light rounded-3">
           <div className="container-fluid py-5">
+            { error && <div>Error: {error}</div> }
+            { !isLoaded ? <div>Loading task info...</div> : null }
             <div className="row display-4 ms-1">
-              {description}
+              {task.description}
             </div>
             <div className="row display-6 fw-bold ms-1">
-              {priority}
+              {task.priority}
             </div>
             <br/>
             <br/>
-            <div className="row ms-1">Deadline: {deadline === null
+            <div className="row ms-1">Deadline: {task.deadline === null
               ? ""
-              : moment(deadline).calendar({
+              : moment(task.deadline).calendar({
                   sameDay: '[Today]',
                   nextDay: '[Tomorrow]',
                   nextWeek: 'dddd',
@@ -100,7 +109,7 @@ const ViewTask = () => {
             <br/>
             <div className="row ms-1 hstack">Tags: {tag_list.map(tag => {
               return (
-                <div key={tag} className="col-auto py-1 px-2 ms-2 bg-darkblue rounded text-white">
+                <div key={tag} className="col-auto py-1 px-2 ms-2 bg-darkblue rounded shadow-sm text-white">
                   {tag}
                 </div>
               )
@@ -113,7 +122,12 @@ const ViewTask = () => {
               </div>
               <div className="col ms-auto">
                 <EditTask taskId={id} reload={reloadTask} buttonStyle={"btn btn-secondary mx-1"}/>
-                <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>Delete</button>
+                <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>

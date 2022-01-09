@@ -1,33 +1,38 @@
 import React, { useState } from "react";
 
-const TagsInput = (props) => {
+type Props = {
+  tag_list: string[]
+  setTagList: Function,
+};
+
+const TagsInput = ({ tag_list, setTagList }: Props) => {
   const [tagInput, setTagInput] = useState("");
 
-  const removeTag = (i) => {
-    const newTags = [ ...props.tag_list ];
+  const removeTag = (i: number) => {
+    const newTags = [ ...tag_list ];
     newTags.splice(i, 1);
-    props.setTagList(newTags);
+    setTagList(newTags);
   };
 
-  const inputKeyDown = (e) => {
-    const val = e.target.value;
+  const inputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const val = (e.target as HTMLInputElement).value
     if (e.key === 'Enter' && val) {
-      if (props.tag_list.find(tag => tag.toLowerCase() === val.toLowerCase())) {
+      if (tag_list.find(tag => tag.toLowerCase() === val.toLowerCase())) {
         return;
       }
       e.preventDefault();
-      props.setTagList([...props.tag_list, val]);
+      setTagList([...tag_list, val]);
       setTagInput("");
-      console.log(props.tag_list);
+      console.log(tag_list);
     } else if (e.key === 'Backspace' && !val) {
-      removeTag(props.tag_list.length - 1);
+      removeTag(tag_list.length - 1);
     }
   };
 
   return (
     <div className="form-control input-tag d-grid">
       <ul className="input-tag__tags">
-        {props.tag_list.map((tag, i) => (
+        {tag_list.map((tag, i) => (
           <li key={tag}>
             {tag}
             <button type="button" onClick={() => { removeTag(i); }}>x</button>
@@ -36,11 +41,11 @@ const TagsInput = (props) => {
         <li className="input-tag__tags__input">
           <input
             type="text"
-            className={props.formStyle}
-            id="inputTags"
+            className="form-control-sm"
+            name="tag_list"
             onKeyDown={inputKeyDown}
             value={tagInput}
-            onChange={event => setTagInput(event.target.value)}
+            onChange={e => setTagInput(e.target.value)}
           />
         </li>
       </ul>

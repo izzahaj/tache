@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Modal, ModalBody } from "react-bootstrap";
 
-const DeleteTag = (props) => {
+type Props = {
+  tag: {
+    id: number,
+    name: string
+  },
+  reloadTags: Function
+}
+
+const DeleteTag = ({ tag, reloadTags }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const showModal = () => {
@@ -13,19 +21,19 @@ const DeleteTag = (props) => {
   };  
 
   const deleteTag = () => {
-    const url = `/api/v1/tags/${props.tagId}`;
-    const token = document.querySelector('meta[name="csrf-token"]').content;
+    const url = `/api/v1/tags/${tag.id}`;
+    const token = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
 
     fetch(url, {
       method: 'DELETE',
       headers: {
-        "X-CSRF-Token": token,
+        "X-CSRF-Token": token.content,
         'Content-Type': 'application/json'
       }
     })
       .then(response => {
         if (response.ok) {
-          props.reloadTags()
+          reloadTags()
           return response.json();
         } 
         throw new Error("Network error.");
@@ -36,18 +44,20 @@ const DeleteTag = (props) => {
 
   return (
     <>
-      <button className="btn btn-sm btn-outline-danger mx-1" onClick={showModal}>Delete</button>
+      <button className="btn btn-sm btn-outline-dark ms-2" onClick={showModal}>
+        X
+      </button>
       <Modal show={isOpen}>
         <Modal.Header>
-          <Modal.Title>Delete Tag: {props.tagName}</Modal.Title>
+          <Modal.Title>Delete Tag: {tag.name}</Modal.Title>
         </Modal.Header>
-        <ModalBody>
+        <ModalBody className="text-center">
           <p>This action will remove the tag from all tasks.</p>
           <p>Are you sure you want to delete this tag?</p>
         </ModalBody>
         <Modal.Footer>
+          <button onClick={hideModal} className="btn btn-secondary me-auto">Cancel</button>
           <button onClick={deleteTag} type="button" className="btn btn-danger">Delete</button>
-          <button onClick={hideModal} className="btn btn-secondary">Cancel</button>
         </Modal.Footer>
       </Modal>
     </>

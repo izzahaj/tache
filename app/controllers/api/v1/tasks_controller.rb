@@ -2,8 +2,8 @@ class Api::V1::TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
-    if params[:description].present? || params[:priority].present? || params[:sort_value].present? || params[:tag_list].present? || params[:due_date].present?
-      @tasks = Task.search(params[:description], params[:priority], params[:sort_value], params[:tag_list], params[:due_date])
+    if params[:description].present? || params[:priority].present? || params[:sort_value].present? || params[:due_date].present? || params[:tag_list].present?
+      @tasks = Task.search(params[:description], params[:priority], params[:sort_value], params[:due_date], params[:tag_list])
     else
       @tasks = Task.all.order(deadline: :asc, description: :asc)
     end
@@ -67,6 +67,6 @@ class Api::V1::TasksController < ApplicationController
     end
     
     def task_params
-      params.require(:task).permit(:description, :deadline, :priority, :tag_list => [])
+      params.require(:task).permit(:description, :deadline, :priority, :id, :created_at, :updated_at, :tag_list => [])
     end
 end

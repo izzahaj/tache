@@ -4,8 +4,6 @@ class Task < ApplicationRecord
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings
 
-  accepts_nested_attributes_for :tags
-
   scope :simple_search, ->(description) {
     where("LOWER(description) LIKE LOWER(?)", "%" + description + "%")
   }
@@ -26,12 +24,6 @@ class Task < ApplicationRecord
     end
   }
 
-  scope :filter_tags, ->(tag_list) {
-    tag_names = tag_list.split(",")
-    joins(:tags).where(tags: { name: tag_list }).distinct if tag_list.length > 0
-
-  }
-
   scope :due_date, ->(due_date) {
     if due_date == "today"
       where(deadline: Date.today)
@@ -45,11 +37,17 @@ class Task < ApplicationRecord
       where(deadline: (1.month.from_now - 1.week)..1.month.from_now)
     elsif due_date == "overdue"
       where("deadline < ?", Date.today)
+    else
     end
   }
 
-  scope :search, ->(description, priority, sort_value, tag_list, due_date) {
-    simple_search(description).filter_priority(priority).sort_value(sort_value).filter_tags(tag_list).due_date(due_date)
+  scope :filter_tags, ->(tag_list) {
+    tag_names = tag_list.split(",")
+    joins(:tags).where(tags: { name: tag_list }).distinct if tag_list.length > 0
+  }
+
+  scope :search, ->(description, priority, sort_value, due_date, tag_list) {
+    simple_search(description).filter_priority(priority).sort_value(sort_value).due_date(due_date).filter_tags(tag_list)
   }
 
 end

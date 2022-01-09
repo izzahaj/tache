@@ -59,10 +59,22 @@
   background: #BBD4CE;
 }
 
+.bg-darkgreen {
+  background: #679186 ;
+}
+
 .bg-paleyellow {
   background: #FDEBD3 ;
 }
 
 .bg-darkblue {
   background: #264E70 ;
+}
+
+.div_hover {
+  background-color: #BBD4CE;
+}
+
+.div_hover:hover {
+  background-color: #679186;
 }
