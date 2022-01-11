@@ -7,9 +7,7 @@ import moment from "moment";
 
 const ViewTask = () => {
   let navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-
+ 
   const currTask = { description: "", deadline: "", priority: "" };
   const [task, setTask] = useState(currTask);
   const [tag_list, setTagList] = useState<string[]>([]);
@@ -23,37 +21,28 @@ const ViewTask = () => {
     Promise.all([
       fetch(url1)
         .then(response => {
-          if (response.ok) {
-            return response.json();
+          if (!response.ok) {
+            throw new Error("Could not fetch task data.");
           }
-          throw new Error("Could not fetch task data.");
+          return response.json();
         }),
       fetch(url2)
         .then(response => {
-          if (response.ok) {
-            return response.json();
+          if (!response.ok) {
+            throw new Error("Could not fetch tags data.");
           }
-          throw new Error("Could not fetch tags data.");
+          return response.json();
         }),
     ])
     .then(
       ([task, tag_list]) => {
-        setIsLoaded(true);
         setTask(task);
         setTagList(tag_list.map((tag: { name: string; }) => tag.name));
+        console.log("Ok");
       })
-      .catch(error => {
-        setIsLoaded(true);
-        setError(error.message);
-      })
+    .catch(error => console.log(error))
   };
-
-  const reloadTask = () => {
-    setTask(task);
-    setTagList(tag_list)
-    loadTask();
-  };
-
+  
   useEffect(() => {
     loadTask();
   }, []);
@@ -70,12 +59,15 @@ const ViewTask = () => {
       }
     })
       .then(response => {
-        if (response.ok) {
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Could not delete task.");
         } 
-        throw new Error("Network error.");
+        return response.json();
       })
-      .then(() => navigate("/"))
+      .then(() => {
+        navigate("/");
+        console.log("Ok");
+      })
       .catch(error => console.log(error.message));
   };
 
@@ -85,8 +77,6 @@ const ViewTask = () => {
       <div className="d-flex flex-column col">
         <div className="p-5 mb-4 ms-2 me-3 bg-light rounded-3">
           <div className="container-fluid py-5">
-            { error && <div>Error: {error}</div> }
-            { !isLoaded ? <div>Loading task info...</div> : null }
             <div className="row display-4 ms-1">
               {task.description}
             </div>
@@ -121,7 +111,7 @@ const ViewTask = () => {
                 <Link to="/" type="button" className="btn btn-secondary">Back to Task List</Link>
               </div>
               <div className="col ms-auto">
-                <EditTask taskId={id} reload={reloadTask} buttonStyle={"btn btn-secondary mx-1"}/>
+                <EditTask taskId={id} load={loadTask} buttonStyle={"btn btn-secondary mx-1"}/>
                 <button type="button" className="btn btn-danger mx-1" onClick={deleteTask}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>

@@ -18,15 +18,11 @@ class Api::V1::TasksController < ApplicationController
     end
   end
 
-  def new
-    @task = Task.new
-  end
-
   def create
     @task = Task.new(task_params)  
     tags_to_add = params[:tag_list]
     tags_to_add.each do |name|
-      tag_to_add = Tag.find_or_create_by(name: name)
+      tag_to_add = Tag.find_or_create_by!(name: name)
       @task.tags << tag_to_add
     end
 
@@ -67,6 +63,6 @@ class Api::V1::TasksController < ApplicationController
     end
     
     def task_params
-      params.require(:task).permit(:description, :deadline, :priority, :id, :created_at, :updated_at, :tag_list => [])
+      params.require(:task).permit(:description, :deadline, :priority, :tag_list => [])
     end
 end

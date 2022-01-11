@@ -3,14 +3,14 @@ import { Modal } from "react-bootstrap";
 import TagsInput from "./TagsInput";
 
 type Props = {
-  reloadTasks: Function
+  loadTasks: Function
 };
 
-const NewTask = ({ reloadTasks }: Props) => {
+const NewTask = ({ loadTasks }: Props) => {
   const taskData = { description: "", deadline: "", priority: "" };
   const [task, setTask] = useState(taskData);
   const [tag_list, setTagList] = useState<string[]>([]);
- 
+
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
     setIsOpen(true);
@@ -45,11 +45,14 @@ const NewTask = ({ reloadTasks }: Props) => {
       body: JSON.stringify(body) 
     })
       .then(response => {
-        if (response.ok) {
-          reloadTasks();
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Could not post task data.");
         } 
-        throw new Error("Network error.");
+        return response.json();
+      })
+      .then(() => {
+        loadTasks();
+        console.log("Ok");
       })
       .catch(error => console.log(error.message));
     hideModal();

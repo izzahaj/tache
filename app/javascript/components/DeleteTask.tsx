@@ -2,11 +2,11 @@ import React from "react";
 
 type Props = {
   taskId: number,
-  reloadTasks: Function,
+  loadTasks: Function,
   buttonStyle: string
 };
 
-const DeleteButton = ({taskId, reloadTasks, buttonStyle}: Props) => {
+const DeleteButton = ({taskId, loadTasks, buttonStyle}: Props) => {
   const deleteItem = () => {
     const url = `/api/v1/tasks/${taskId}`;
     const token = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
@@ -18,11 +18,14 @@ const DeleteButton = ({taskId, reloadTasks, buttonStyle}: Props) => {
       }
     })
       .then(response => {
-        if (response.ok) {
-          reloadTasks()
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Network error.");
         } 
-        throw new Error("Network error.");
+        return response.json();
+      })
+      .then(() => {
+        loadTasks();
+        console.log("Ok");
       })
       .catch(error => console.log(error.message));
   };

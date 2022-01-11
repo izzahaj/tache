@@ -1,37 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../customhooks/hooks";
+import { getTags } from "../reducers/tagsReducer";
 import SideBar from "./SideBar";
 import Tag from "./Tag";
 
-interface TagsData {
-  id: number,
-  name: string
-};
-
 const TagList = () => {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [tags, setTags] = useState<TagsData[]>([]);
+  const tags = useAppSelector((state) => state.tags.value);
+  const dispatch = useAppDispatch();
 
   const loadTags = () => {
     const url = `/api/v1/tags`;
     fetch(url)
-      .then(response => response.json())
-      .then(
-        (tag) => {
-          setIsLoaded(true);
-          setTags(tag);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Could not fetch tag data.");
         }
-      )
+        return response.json();
+      })
+      .then(
+        (tags) => {
+          dispatch(getTags(tags));
+          console.log("Ok");
+        })
+      .catch(error => console.log(error))
   }
-
-  const reloadTags = () => {
-    setTags([]);
-    loadTags();
-  };
 
   useEffect(() => {
     loadTags();
@@ -44,13 +36,12 @@ const TagList = () => {
         <div className="mt-2">
           <h1>Tags</h1>
         </div>
+        <div className="fs-4 fw-lighter text-center">{tags.length < 1 ? "No" : tags.length} tags found.</div>
         <div className="row row-cols-auto d-grif">
-          {tags.length < 1
-            ? <div className="fs-4 fw-lighter text-center">No tags found.</div>
-            : tags.map(tag => {
-                return (
-                  <Tag key={tag.id} tag={tag} reloadTags={reloadTags}/>
-                )
+          { tags.map(tag => {
+              return (
+                <Tag key={tag.id} tag={tag} loadTags={loadTags}/>
+              )
             })}
         </div>
       </div>

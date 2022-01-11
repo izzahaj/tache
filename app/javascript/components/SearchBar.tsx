@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import TagsInput from "./TagsInput";
+import { getTasks } from "../reducers/tasksReducer";
+import { useAppDispatch } from "../customhooks/hooks"
 
-type Props = {
-  setTasks: Function
-};
-
-const SearchBar = ({ setTasks }: Props) => {
+const SearchBar = () => {
   const searchData = { searchValue: "", priority: "all", sortValue: "deadline", dueDate: "" }
   const [searchInput, setSearchInput] = useState(searchData);
   const [tag_list, setTagList] = useState<string[]>([])
+  const dispatch = useAppDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target as HTMLInputElement; 
@@ -19,15 +18,17 @@ const SearchBar = ({ setTasks }: Props) => {
     const url = `/api/v1/tasks?description=${searchInput.searchValue}&priority=${searchInput.priority}&sort_value=${searchInput.sortValue}&due_date=${searchInput.dueDate}&tag_list=${tag_list}`;
     fetch(url)
       .then(response => {
-        if (response.ok) {
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Could not fetch task data.");
         }
-        throw new Error("Could not fetch task data.");
+        return response.json();
       })
       .then(
         (tasks) => {
-          setTasks(tasks);
+          dispatch(getTasks(tasks));
+          console.log("Ok");
         })
+      .catch(error => console.log(error))
   };
 
   return (

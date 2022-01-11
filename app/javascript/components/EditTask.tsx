@@ -4,14 +4,11 @@ import TagsInput from "./TagsInput";
 
 type Props = {
   taskId: number | string | undefined,
-  reload: Function,
+  load: Function,
   buttonStyle: string
 };
 
-const EditTask = ({ taskId, reload, buttonStyle }: Props) => {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  
+const EditTask = ({ taskId, load, buttonStyle }: Props) => { 
   const taskData = { description: "", deadline: "", priority: "" };
   const [task, setTask] = useState(taskData);
   const [tag_list, setTagList] = useState<string[]>([]);
@@ -31,29 +28,26 @@ const EditTask = ({ taskId, reload, buttonStyle }: Props) => {
     Promise.all([
       fetch(url1)
         .then(response => {
-          if (response.ok) {
-            return response.json();
+          if (!response.ok) {
+            throw new Error("Could not fetch task data.");
           }
-          throw new Error("Could not fetch task data.");
+          return response.json();
         }),
       fetch(url2)
         .then(response => {
-          if (response.ok) {
-            return response.json()
+          if (!response.ok) {
+            throw new Error("Could not fetch tags data."); 
           }
-          throw new Error("Could not fetch tags data.");
+          return response.json()
         }),
     ])
     .then(
       ([task, tag_list]) => {
-        setIsLoaded(true);
         setTask(task);
         setTagList(tag_list.map((tag: { name: string; }) => tag.name)); 
+        console.log("Ok")
       })
-      .catch(error => {
-        setIsLoaded(true);
-        setError(error.message);
-      })
+    .catch(error => console.log(error))
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
@@ -81,7 +75,7 @@ const EditTask = ({ taskId, reload, buttonStyle }: Props) => {
     })
       .then(response => {
         if (response.ok) {
-          reload();
+          load();
           return response.json();
         } 
         throw new Error("Network error.");
@@ -96,46 +90,43 @@ const EditTask = ({ taskId, reload, buttonStyle }: Props) => {
         <Modal.Header closeButton>
           <Modal.Title>Edit Task</Modal.Title>
         </Modal.Header>
-        { error && <div>Error: {error}</div> }
-        { !isLoaded
-          ? <div>Loading task info...</div>
-          : <form>
-              <Modal.Body>
-                <div className="row mb-3">
-                  <label htmlFor="description" className="col-sm-2 col-form-label">Description</label>
-                  <div className="col-sm-10">
-                    <input type="text" className="form-control" name="description" onChange={handleChange} value={task.description} required/>
-                  </div>
+        <form>
+            <Modal.Body>
+              <div className="row mb-3">
+                <label htmlFor="description" className="col-sm-2 col-form-label">Description</label>
+                <div className="col-sm-10">
+                  <input type="text" className="form-control" name="description" onChange={handleChange} value={task.description} required/>
                 </div>
-                <div className="row mb-3">
-                  <label htmlFor="deadline" className="col-sm-2 col-form-label">Deadline</label>
-                  <div className="col-sm-10">
-                    <input type="date" className="form-control" name="deadline" onChange={handleChange} value={task.deadline === null ? '' : task.deadline}/>
-                  </div>
+              </div>
+              <div className="row mb-3">
+                <label htmlFor="deadline" className="col-sm-2 col-form-label">Deadline</label>
+                <div className="col-sm-10">
+                  <input type="date" className="form-control" name="deadline" onChange={handleChange} value={task.deadline === null ? '' : task.deadline}/>
                 </div>
-                <div className="row mb-3">
-                  <label htmlFor="priority" className="col-sm-2 col-form-label">Priority</label>
-                  <div className="col-sm-10">
-                    <select className="form-select" name="priority" onChange={handleChange} value={task.priority}>
-                      <option value="">No Priority</option>
-                      <option value="Low Priority">Low Priority</option>
-                      <option value="Medium Priority">Medium Priority</option>
-                      <option value="High Priority">High Priority</option>
-                    </select>
-                  </div>
+              </div>
+              <div className="row mb-3">
+                <label htmlFor="priority" className="col-sm-2 col-form-label">Priority</label>
+                <div className="col-sm-10">
+                  <select className="form-select" name="priority" onChange={handleChange} value={task.priority}>
+                    <option value="">No Priority</option>
+                    <option value="Low Priority">Low Priority</option>
+                    <option value="Medium Priority">Medium Priority</option>
+                    <option value="High Priority">High Priority</option>
+                  </select>
                 </div>
-                <div className="row mb-3">
-                  <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
-                  <div className="col-sm-10">
-                    <TagsInput tag_list={tag_list} setTagList={setTagList} />
-                  </div>
+              </div>
+              <div className="row mb-3">
+                <label htmlFor="inputTags" className="col-sm-2 col-form-label">Tags</label>
+                <div className="col-sm-10">
+                  <TagsInput tag_list={tag_list} setTagList={setTagList} />
                 </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <button onClick={handleUpdate} type="button" className="btn btn-secondary">Update</button>
-                <button onClick={hideModal} className="btn btn-secondary">Cancel</button>
-              </Modal.Footer>
-            </form>}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button onClick={handleUpdate} type="button" className="btn btn-secondary">Update</button>
+              <button onClick={hideModal} className="btn btn-secondary">Cancel</button>
+            </Modal.Footer>
+        </form>
       </Modal>
     </>
   );

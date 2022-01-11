@@ -6,10 +6,10 @@ type Props = {
     id: number,
     name: string
   },
-  reloadTags: Function
+  loadTags: Function
 }
 
-const DeleteTag = ({ tag, reloadTags }: Props) => {
+const DeleteTag = ({ tag, loadTags }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const showModal = () => {
@@ -32,11 +32,14 @@ const DeleteTag = ({ tag, reloadTags }: Props) => {
       }
     })
       .then(response => {
-        if (response.ok) {
-          reloadTags()
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Could not delete tag.");
         } 
-        throw new Error("Network error.");
+        return response.json();
+      })
+      .then(() => {
+        loadTags();
+        console.log("Ok")
       })
       .catch(error => console.log(error.message));
 

@@ -11,10 +11,10 @@ type Props = {
     deadline: string,
     priority: string
   },
-  reloadTasks: Function
+  loadTasks: Function
 };
 
-const Task = ({ task, reloadTasks }: Props) => {
+const Task = ({ task, loadTasks }: Props) => {
   return (
     <div className="d-grid shadow-sm text-start bg-secondary bg-opacity-25 rounded mb-2 py-1">
       <div className="row hstack">
@@ -41,8 +41,8 @@ const Task = ({ task, reloadTasks }: Props) => {
         <div className="col-auto ms-auto me-2">
           <div className="hstack gap-1">
             <Link to={`tasks/${task.id}`} className="btn btn-sm btn-outline-dark mx-1">View</Link>
-            <EditTask taskId={task.id} reload={reloadTasks} buttonStyle={"btn btn-sm btn-outline-dark mx-1"}/>
-            <DeleteButton taskId={task.id} reloadTasks={reloadTasks} buttonStyle={"btn btn-sm btn-outline-danger mx-1"}/>
+            <EditTask taskId={task.id} load={loadTasks} buttonStyle={"btn btn-sm btn-outline-dark mx-1"}/>
+            <DeleteButton taskId={task.id} loadTasks={loadTasks} buttonStyle={"btn btn-sm btn-outline-danger mx-1"}/>
           </div>
         </div>
       </div>

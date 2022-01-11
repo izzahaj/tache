@@ -3,20 +3,14 @@ import NewTask from "./NewTask";
 import Task from "./Task";
 import SearchBar from "./SearchBar";
 import { Collapse } from "react-bootstrap";
-
-interface TasksData {
-  id: number,
-  description: string,
-  deadline: string,
-  priority: string
-}
+import { getTasks } from "../reducers/tasksReducer";
+import { useAppSelector, useAppDispatch } from "../customhooks/hooks"
 
 const TaskList = () => {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [tasks, setTasks] = useState<TasksData[]>([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
-
+  const tasks = useAppSelector((state) => state.tasks.value);
+  const dispatch = useAppDispatch();
+  
   const handleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
   }
@@ -25,25 +19,17 @@ const TaskList = () => {
     const url = `/api/v1/tasks`;
     fetch(url)
       .then(response => {
-        if (response.ok) {
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Could not fetch task data.");
         }
-        throw new Error("Could not fetch task data.");
+        return response.json();
       })
       .then(
         (tasks) => {
-          setIsLoaded(true);
-          setTasks(tasks);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error.message);
+          dispatch(getTasks(tasks));
+          console.log("Ok");
         })
-  };
-
-  const reloadTasks = () => {
-    setTasks([]);
-    loadTasks();
+      .catch(error => console.log(error))
   };
 
   useEffect(() => {
@@ -70,27 +56,24 @@ const TaskList = () => {
         </div>
         <Collapse in={showSearchBar}>
           <div id="searchBar">
-            <SearchBar setTasks={setTasks}/>
+            <SearchBar/>
           </div>
         </Collapse>
         <div className="fs-4 fw-lighter text-center">{tasks.length < 1 ? "No" : tasks.length} tasks found.</div>
         <div className="pt-2 d-grid bg-white">
-          <NewTask reloadTasks={reloadTasks}/>
+          <NewTask loadTasks={loadTasks}/>
         </div>
       </div>
       <div className="d-grid">
         <div>
-          { error && <div className="fs-4 fw-lighter text-center">Error: {error}</div> }
-          { !isLoaded
-            ? <div className="fs-4 fw-lighter text-center">Loading tasks...</div>
-            : tasks.map(task => {
-                return (
-                  <Task
-                    key={task.id}
-                    task={task}
-                    reloadTasks={reloadTasks}
-                  />
-                );
+          { tasks.map(task => {
+              return (
+                <Task
+                  key={task.id}
+                  task={task}
+                  loadTasks={loadTasks}
+                />
+              );
           })}
         </div>
       </div>

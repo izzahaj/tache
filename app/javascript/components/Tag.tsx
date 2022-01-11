@@ -6,15 +6,15 @@ type Props = {
     id: number,
     name: string
   },
-  reloadTags: Function
+  loadTags: Function
 }
 
-const Tag = ({tag, reloadTags}: Props) => {
+const Tag = ({tag, loadTags}: Props) => {
   return (
     <div className="col-auto py-1 ms-2 mt-2 bg-paleyellow rounded shadow-sm text-black">
       <div className="hstack ">
         {tag.name}
-        <DeleteTag tag={tag} reloadTags={reloadTags}/>
+        <DeleteTag tag={tag} loadTags={loadTags}/>
       </div>
     </div>
   );
