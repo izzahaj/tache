@@ -43,9 +43,9 @@ class Task < ApplicationRecord
 
   scope :filter_tags, ->(tag_list) {
     tag_names = tag_list.split(",")
-    joins(:tags).where(tags: { name: tag_list }).distinct if tag_list.length > 0
+    joins(:tags).where(tags: { name: tag_names }).group('tasks.id').having('count(tasks.id) = ?', tag_names.length) if tag_list.length > 0
   }
-
+  
   scope :search, ->(description, priority, sort_value, due_date, tag_list) {
     simple_search(description).filter_priority(priority).sort_value(sort_value).due_date(due_date).filter_tags(tag_list)
   }
