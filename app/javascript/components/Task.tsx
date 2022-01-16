@@ -6,7 +6,7 @@ import moment from "moment";
 
 type Props = {
   task: {
-    id: number,
+    id: number | string | undefined,
     description: string,
     deadline: string,
     priority: string
@@ -42,7 +42,7 @@ const Task = ({ task, loadTasks }: Props) => {
           <div className="hstack gap-1">
             <Link to={`tasks/${task.id}`} className="btn btn-sm btn-outline-dark mx-1">View</Link>
             <EditTask taskId={task.id} load={loadTasks} buttonStyle={"btn btn-sm btn-outline-dark mx-1"}/>
-            <DeleteButton taskId={task.id} loadTasks={loadTasks} buttonStyle={"btn btn-sm btn-outline-danger mx-1"}/>
+            <DeleteButton taskId={task.id} buttonStyle={"btn btn-sm btn-outline-danger mx-1"}/>
           </div>
         </div>
       </div>

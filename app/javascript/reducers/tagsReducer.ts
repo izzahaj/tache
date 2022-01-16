@@ -13,9 +13,13 @@ const tagsSlice = createSlice({
   reducers: {
     getTags: (state, action: PayloadAction<TagsState[]>) => {
       state.value = action.payload
+    },
+    removeTag: (state, action: PayloadAction<number>) => {
+      const index = state.value.findIndex(tag => tag.id === action.payload)
+      state.value.splice(index, 1)
     }
   }
 });
 
-export const { getTags } = tagsSlice.actions;
+export const { getTags, removeTag } = tagsSlice.actions;
 export default tagsSlice.reducer;

@@ -12,11 +12,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import tasksReducer from '../reducers/tasksReducer';
 import tagsReducer from '../reducers/tagsReducer';
+import taskReducer from '../reducers/taskReducer';
+import tagListReducer from '../reducers/tagListReducer';
 
 const store = configureStore({
   reducer: {
     tasks: tasksReducer,
-    tags: tagsReducer
+    tags: tagsReducer,
+    task: taskReducer,
+    tagList: tagListReducer
   }
 });
 

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Modal, ModalBody } from "react-bootstrap";
+import { useAppDispatch } from "../customhooks/hooks";
+import { removeTag } from "../reducers/tagsReducer";
 
 type Props = {
   tag: {
     id: number,
     name: string
-  },
-  loadTags: Function
+  }
 }
 
-const DeleteTag = ({ tag, loadTags }: Props) => {
+const DeleteTag = ({ tag }: Props) => {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   const showModal = () => {
@@ -37,12 +39,10 @@ const DeleteTag = ({ tag, loadTags }: Props) => {
         } 
         return response.json();
       })
-      .then(() => {
-        loadTags();
-        console.log("Ok")
-      })
+      .then(() => dispatch(removeTag(tag.id)))
+      .then(() => console.log("Ok"))
       .catch(error => console.log(error.message));
-
+    hideModal();
   };
 
   return (

@@ -8,7 +8,7 @@ const TagList = () => {
   const tags = useAppSelector((state) => state.tags.value);
   const dispatch = useAppDispatch();
 
-  const loadTags = () => {
+  useEffect(() => {
     const url = `/api/v1/tags`;
     fetch(url)
       .then(response => {
@@ -17,16 +17,9 @@ const TagList = () => {
         }
         return response.json();
       })
-      .then(
-        (tags) => {
-          dispatch(getTags(tags));
-          console.log("Ok");
-        })
+      .then(tags => dispatch(getTags(tags)))
+      .then(() => console.log("Ok"))
       .catch(error => console.log(error))
-  }
-
-  useEffect(() => {
-    loadTags();
   }, []);
 
   return (
@@ -40,7 +33,7 @@ const TagList = () => {
         <div className="row row-cols-auto d-grif">
           { tags.map(tag => {
               return (
-                <Tag key={tag.id} tag={tag} loadTags={loadTags}/>
+                <Tag key={tag.id} tag={tag}/>
               )
             })}
         </div>

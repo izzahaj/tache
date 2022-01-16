@@ -4,9 +4,9 @@ import TagsInput from "./TagsInput";
 
 type Props = {
   loadTasks: Function
-};
+}
 
-const NewTask = ({ loadTasks }: Props) => {
+const NewTask = ( { loadTasks }: Props  )=> {
   const taskData = { description: "", deadline: "", priority: "" };
   const [task, setTask] = useState(taskData);
   const [tag_list, setTagList] = useState<string[]>([]);
@@ -50,10 +50,8 @@ const NewTask = ({ loadTasks }: Props) => {
         } 
         return response.json();
       })
-      .then(() => {
-        loadTasks();
-        console.log("Ok");
-      })
+      .then(() => loadTasks())
+      .then(() => console.log("Ok"))
       .catch(error => console.log(error.message));
     hideModal();
   };

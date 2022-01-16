@@ -3,12 +3,15 @@ import NewTask from "./NewTask";
 import Task from "./Task";
 import SearchBar from "./SearchBar";
 import { Collapse } from "react-bootstrap";
-import { getTasks } from "../reducers/tasksReducer";
 import { useAppSelector, useAppDispatch } from "../customhooks/hooks"
+import { setTasks } from "../reducers/tasksReducer";
 
 const TaskList = () => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const tasks = useAppSelector((state) => state.tasks.value);
+  const searchData = { searchValue: "", priority: "all", sortValue: "deadline", dueDate: "" }
+  const [searchInput, setSearchInput] = useState(searchData);
+  const [tag_list, setTagList] = useState<string[]>([])
   const dispatch = useAppDispatch();
   
   const handleSearchBar = () => {
@@ -16,7 +19,7 @@ const TaskList = () => {
   }
 
   const loadTasks = () => {
-    const url = `/api/v1/tasks`;
+    const url = `/api/v1/tasks?description=${searchInput.searchValue}&priority=${searchInput.priority}&sort_value=${searchInput.sortValue}&due_date=${searchInput.dueDate}&tag_list=${tag_list}`;
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -24,11 +27,8 @@ const TaskList = () => {
         }
         return response.json();
       })
-      .then(
-        (tasks) => {
-          dispatch(getTasks(tasks));
-          console.log("Ok");
-        })
+      .then(tasks => dispatch(setTasks(tasks)))
+      .then(() => console.log("Ok"))
       .catch(error => console.log(error))
   };
 
@@ -56,7 +56,13 @@ const TaskList = () => {
         </div>
         <Collapse in={showSearchBar}>
           <div id="searchBar">
-            <SearchBar/>
+            <SearchBar
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              tag_list={tag_list}
+              setTagList={setTagList}
+              loadTasks={loadTasks}
+            />
           </div>
         </Collapse>
         <div className="fs-4 fw-lighter text-center">{tasks.length < 1 ? "No" : tasks.length} tasks found.</div>
