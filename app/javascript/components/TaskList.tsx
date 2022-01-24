@@ -41,7 +41,7 @@ const TaskList = () => {
       <div className="sticky-top bg-white">
         <div className="hstack mt-2">
           <div>
-            <h1>Hello User!</h1>
+            <h1>Task List</h1>
           </div>
           <div className="ms-auto">
             <button

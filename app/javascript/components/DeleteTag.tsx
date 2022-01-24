@@ -47,7 +47,7 @@ const DeleteTag = ({ tag }: Props) => {
 
   return (
     <>
-      <button className="btn btn-sm btn-outline-dark ms-2" onClick={showModal}>
+      <button className="delete-tag" onClick={showModal}>
         X
       </button>
       <Modal show={isOpen}>

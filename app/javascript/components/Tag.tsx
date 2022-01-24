@@ -10,8 +10,8 @@ type Props = {
 
 const Tag = ({ tag }: Props) => {
   return (
-    <div className="col-auto py-1 ms-2 mt-2 bg-paleyellow rounded shadow-sm text-black">
-      <div className="hstack ">
+    <div className="col-auto py-1 ms-2 mt-2 bg-paleyellow rounded shadow-sm text-black delete-tag">
+      <div className="hstack">
         {tag.name}
         <DeleteTag tag={tag}/>
       </div>
