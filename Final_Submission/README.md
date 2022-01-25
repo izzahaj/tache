@@ -9,8 +9,3 @@
 ```
 A0238063H
 ```
-
-## Link to Source Code
-```
-https://github.com/izzahaj/tache
-```
