@@ -15,7 +15,7 @@ A0238063H
 https://github.com/izzahaj/tache
 ```
 
-# Dependencies
+## Dependencies
 * Ruby: 2.7.2
 * PostgreSQL: 14.1
 * Rails: 6.1.4.4
